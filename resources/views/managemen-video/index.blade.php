@@ -155,8 +155,8 @@
             $('#modal-title').text("Edit Data Manajemen Video");
             $('#modal-form').modal('show');
             // url action to update
-            let url = `{{ route('managemen-video.update', 'id') }}`
-            $('#myForm').attr('action', url.replace('id', id));
+            let url = `{{ route('managemen-video.update', 'uid') }}`
+            $('#myForm').attr('action', url.replace('uid', id));
             $('#myForm').data('type', 'edit');
 
             $.ajax({
@@ -172,7 +172,6 @@
                     $('#id').val(res.data.id);
                     $('#judul').val(res.data.judul);
                     $('#deskripsi').val(res.data.deskripsi);
-                    $('#multimedias.path').val(res.data.multimedias.path);
                 },
                 error: function(data) {
                     console.log(data.errors);

@@ -136,7 +136,6 @@ class ManagemenVideoController extends Controller
             'judul' => 'sometimes|required|string|max:255',  
             'deskripsi' => 'sometimes|required|string',  
             'path.*' => 'file|mimetypes:video/mp4,image/jpeg,image/png|max:10240',   
-            'existing_files' => 'sometimes|array', // Untuk mentrack file yang sudah ada  
         ]);  
     
         // Cek validasi  
@@ -150,10 +149,8 @@ class ManagemenVideoController extends Controller
     
         try {  
             // Cari data ManagemenVideo yang akan diupdate  
-            $managemenVideo = ManagemenVideo::with('multimedias')->findOrFail($request->id);
+            $managemenVideo = ManagemenVideo::with('multimedias')->findOrFail($id);  
             
-           
-    
             // Update data dasar jika ada  
             $updateData = [];  
             if ($request->has('judul')) {  
@@ -169,27 +166,28 @@ class ManagemenVideoController extends Controller
             }  
     
             // Proses pengelolaan file  
-            foreach ($managemenVideo->multimedias as $multimedia) {
-                if (Storage::disk('public')->exists($multimedia->path)) {
-                    Storage::disk('public')->delete($multimedia->path);
-                    Multimedia::where('managemen_video_id', $managemenVideo->id)->delete();  
-                }
-            }
-            // 2. Tambahkan file baru jika ada  
             if ($request->hasFile('path')) {  
+                // Hapus file lama  
+                foreach ($managemenVideo->multimedias as $multimedia) {  
+                    if (Storage::disk('public')->exists($multimedia->path)) {  
+                        Storage::disk('public')->delete($multimedia->path);  
+                        $multimedia->delete();  // Hapus multimedia yang ada  
+                    }  
+                }  
+    
+                // Tambahkan file baru  
                 $uploadedFiles = $request->file('path');  
-                
                 foreach ($uploadedFiles as $file) {  
                     $fileName = time() . '_' . $file->getClientOriginalName();  
                     $filePath = $file->storeAs('uploads', $fileName, 'public');  
-                    
+    
                     // Simpan setiap file baru ke tabel Multimedia  
                     Multimedia::create([  
                         'managemen_video_id' => $managemenVideo->id,  
                         'path' => $filePath  
                     ]);  
                 }  
-            }  
+            }   
     
             // Ambil data multimedia terbaru  
             $updatedMultimedia = Multimedia::where('managemen_video_id', $managemenVideo->id)->get();  
