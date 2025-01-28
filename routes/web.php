@@ -3,11 +3,13 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManagemenVideoController;
+use App\Http\Controllers\TvMediaController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::get('/tvMedia', [TvMediaController::class, 'index'])->name('tvMedia');
 
 Route::group(['middleware' => 'auth'], function () {
    
