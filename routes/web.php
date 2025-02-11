@@ -18,6 +18,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/managemen-video/edit', [ManagemenVideoController::class, 'edit'])->name('managemen-video.edit');
     Route::put('/managemen-video/update/{id}', [ManagemenVideoController::class, 'update'])->name('managemen-video.update');
     Route::delete('/managemen-video/delete', [ManagemenVideoController::class, 'destroy'])->name('managemen-video.delete');
+    Route::post('/managemen-video/videos', [ManagemenVideoController::class, 'video'])->name('managemen-video.vide');
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
