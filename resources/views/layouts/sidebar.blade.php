@@ -1,12 +1,12 @@
 <ul class="side-nav">
 
     <li class="side-nav-title side-nav-item">Navigation</li>
-    <li class="side-nav-item">
+    {{-- <li class="side-nav-item">
         <a href="/dashboard" class="side-nav-link">
             <i class="uil-home-alt"></i>
             <span> Dashboards </span>
         </a>
-    </li>
+    </li> --}}
     <li class="side-nav-title side-nav-item">Manajemen</li>
 
     <li class="side-nav-item">
