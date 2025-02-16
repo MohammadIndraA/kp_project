@@ -11,6 +11,7 @@ class ManagemenVideo extends Model
     protected $fillable = [
         'judul',
         'deskripsi',
+        'status',
     ];
 
     public function multimedias(){

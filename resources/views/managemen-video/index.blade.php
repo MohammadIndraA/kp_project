@@ -1,4 +1,97 @@
 @extends('layouts.main')
+@section('style')
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            /* Penuh satu layar */
+            max-width: 100%;
+            background: #fff;
+        }
+
+        .header {
+            background-color: #ffcc00;
+            /* Warna kuning */
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 24px;
+            border-bottom: 4px solid #fff;
+            box-sizing: border-box;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            /* Hindari overflow */
+        }
+
+        .media {
+            flex: 2;
+            /* Media lebih besar dari deskripsi */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            /* Warna latar hitam untuk media */
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            overflow: hidden;
+        }
+
+        .carousel img,
+        .carousel video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            /* Pastikan media tetap rapi */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            position: absolute;
+        }
+
+        .carousel img.active,
+        .carousel video.active {
+            opacity: 1;
+            position: static;
+        }
+
+        .description {
+            flex: 1;
+            padding: 20px;
+            background-color: #32cd32;
+            /* Warna hijau */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .description h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #fff;
+        }
+
+        .description p {
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: justify;
+        }
+    </style>
+@endsection
 @section('title', 'Manajemen Video')
 @section('content')
     <div class="row">
@@ -27,13 +120,13 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-borderless nowrap" id="data-table">
+                        <table class="table table-borderless" id="data-table">
                             <thead class="">
                                 <tr>
                                     <th style="width: 10px">#</th>
                                     <th>Title</th>
                                     <th>Deskripsi</th>
-                                    <th>Video / Image</th>
+                                    <th>Status</th>
                                     <th style="width: 20px" class="text-center"><i class="dripicons-gear"></i></th>
                                     {{-- <th style="width: 85px;">Action</th> --}}
                                 </tr>
@@ -68,6 +161,16 @@
                 </div>
             </div>
             <div class="row mb-1">
+                <label for="status" class="col-3 col-form-label">Status <sop class="text-danger">*</sop>
+                </label>
+                <div class="col-9">
+                    <select class="form-control select2" data-toggle="select2" id="status" name="status">
+                        <option value="1">Aktif</option>
+                        <option value="0">Tidak Aktif</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-1">
                 <label for="path" class="col-3 col-form-label">Image / Video <sop class="text-danger">*</sop>
                 </label>
                 <div class="col-9">
@@ -77,11 +180,28 @@
             </div>
         </div>
     </x-modal>
+
+    <x-modal-data-show>
+        <div class="container">
+            <div class="header">
+                <h1 id="title"></h1>
+            </div>
+            <div class="content">
+                <div class="media">
+                    <div class="carousel" id="carousel"></div>
+                </div>
+                <div class="description">
+                    <h2>Deskripsi Informasi</h2>
+                    <p id="description"></p>
+                </div>
+            </div>
+        </div>
+    </x-modal-data-show>
 @endsection
 @section('script')
     <script>
         $(document).ready(function() {
-
+            $('.select2').select2();
             // ajax setup for csrf token
             $.ajaxSetup({
                 headers: {
@@ -110,8 +230,8 @@
                         name: 'deskripsi',
                     },
                     {
-                        data: 'path',
-                        name: 'path',
+                        data: 'status',
+                        name: 'status',
                     },
                     {
                         data: 'action',
@@ -242,6 +362,126 @@
                     alertNotify('danger', data.responseJSON.message);
                 }
             });
+        });
+
+        function loadMedia(data) {
+            const currentData = data;
+
+            // Bersihkan konten carousel sebelumnya
+            const carouselContainer = document.getElementById('carousel');
+            carouselContainer.innerHTML = '';
+            currentData.multimedias.forEach(media => {
+                let mediaElement;
+
+                if (media.path.endsWith('.mp4')) {
+                    mediaElement = document.createElement('video');
+                    mediaElement.controls = true;
+                    mediaElement.autoplay = false;
+                    mediaElement.muted = true;
+
+                    const sourceElement = document.createElement('source');
+                    sourceElement.src = `/storage/${media.path}`;
+                    sourceElement.type = 'video/mp4';
+                    mediaElement.appendChild(sourceElement);
+                } else {
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = `/storage/${media.path}`;
+                    mediaElement.alt = currentData.judul;
+                }
+
+                // Tambahkan class 'carousel-item'
+                mediaElement.classList.add('carousel-item');
+                carouselContainer.appendChild(mediaElement);
+            });
+
+            startCarousel();
+        }
+
+        function startCarousel() {
+            const items = document.querySelectorAll('.carousel-item');
+            let carouselIndex = 0;
+            let isVideoPlaying = false;
+
+            function showNextItem() {
+                if (isVideoPlaying) return;
+
+                items[carouselIndex].classList.remove('active');
+
+                if (items[carouselIndex].tagName === 'VIDEO') {
+                    items[carouselIndex].pause();
+                    items[carouselIndex].currentTime = 0;
+                }
+
+                carouselIndex = (carouselIndex + 1) % items.length;
+                items[carouselIndex].classList.add('active');
+
+                if (items[carouselIndex].tagName === 'VIDEO') {
+                    items[carouselIndex].play();
+                    isVideoPlaying = true;
+
+                    items[carouselIndex].addEventListener('ended', () => {
+                        isVideoPlaying = false;
+                        showNextItem();
+                    }, {
+                        once: true
+                    });
+                }
+            }
+
+            setInterval(() => {
+                if (!isVideoPlaying) {
+                    showNextItem();
+                }
+            }, 4000); // Ganti setiap 4 detik
+
+            // Tampilkan item pertama
+            items[carouselIndex].classList.add('active');
+            if (items[carouselIndex].tagName === 'VIDEO') {
+                items[carouselIndex].play();
+                isVideoPlaying = true;
+                items[carouselIndex].addEventListener('ended', () => {
+                    isVideoPlaying = false;
+                    showNextItem();
+                }, {
+                    once: true
+                });
+            }
+        }
+
+        // show data
+        function showFunc(id) {
+            $('#myFormShow').trigger("reset");
+            $('#modal-title-show').text("Detail Data Manajemen Video");
+            $('#modal-form-show').modal('show');
+            $.ajax({
+                type: "GET",
+                url: "{{ route('managemen-video.edit') }}",
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function(res) {
+                    $('#modal-title-show').html("Detail Data Manajemen Video");
+                    $('#id').val(res.data.id);
+                    $('#title').html(res.data.judul);
+                    $('#description').html(res.data.deskripsi);
+                    loadMedia(res.data);
+                },
+                error: function(data) {
+                    console.log(data.errors);
+
+                    alertNotify('error', data.responseJSON.message);
+                }
+            });
+        }
+
+        document.getElementById('status').addEventListener('change', function() {
+            // Jika checkbox dicentang, ubah value menjadi 1
+            if (this.checked) {
+                this.value = 1;
+            } else { // Jika tidak dicentang, ubah value menjadi 0
+                this.value = 0;
+            }
         });
     </script>
 @endsection

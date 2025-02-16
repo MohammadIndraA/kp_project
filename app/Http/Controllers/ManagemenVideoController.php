@@ -28,6 +28,12 @@ class ManagemenVideoController extends Controller
                                 <i class="dripicons-document-edit"></i>
                             </button>
                         ';
+
+                        $showButton = '
+                            <button onclick="showFunc(`' . $row->id . '`)" class="btn btn-secondary btn-flat btn-sm" title="Show">
+                                <i class="mdi mdi-eye"></i>
+                            </button>
+                        ';
                 
                         $deleteButton = '
                             <button onclick="deleteFunc(`' . $row->id . '`)" class="btn btn-danger btn-flat btn-sm" title="Delete">
@@ -39,6 +45,7 @@ class ManagemenVideoController extends Controller
                     return '
                         <div class="d-flex gap-1">
                             ' . $editButton . '
+                            ' . $showButton . '
                             ' . $deleteButton . '
                         </div>
                     ';
@@ -50,7 +57,10 @@ class ManagemenVideoController extends Controller
                     }
                     return $images;
                 })
-                ->rawColumns(['action', 'path'])                
+                ->editColumn('status', function ($row) {
+                    return $row->status ? '<span class="badge bg-success rounded-pill">Aktif</span>' :  '<span class="badge bg-danger rounded-pill">Tidak Aktif</span>';
+                })
+                ->rawColumns(['action', 'path','status'])                
                 ->make(true);
         }
         return view('managemen-video.index');
@@ -61,6 +71,7 @@ class ManagemenVideoController extends Controller
         $validator = Validator::make($request->all(), [  
             'judul' => 'required|string|max:255',  
             'deskripsi' => 'required|string',  
+            'status' => 'required|boolean',
             'path' => 'required|array', // Ubah menjadi array  
             'path.*' => 'file|mimetypes:video/mp4,image/jpeg,image/png|max:10240', // Validasi untuk setiap file  
         ]);  
@@ -78,7 +89,8 @@ class ManagemenVideoController extends Controller
             // Simpan data ManagemenVideo   
             $managemenVideo = ManagemenVideo::create([  
                 'judul' => $request->input('judul'),  
-                'deskripsi' => $request->input('deskripsi'),  
+                'deskripsi' => $request->input('deskripsi'), 
+                'status' => $request->input('status')
             ]);   
     
             // Proses upload multiple files  
@@ -135,6 +147,7 @@ class ManagemenVideoController extends Controller
         $validator = Validator::make($request->all(), [  
             'judul' => 'sometimes|required|string|max:255',  
             'deskripsi' => 'sometimes|required|string',  
+            'status' => 'required|boolean',
             'path.*' => 'file|mimetypes:video/mp4,image/jpeg,image/png|max:10240',   
         ]);  
     
