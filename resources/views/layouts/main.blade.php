@@ -37,17 +37,17 @@
         <div class="leftside-menu">
 
             <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-light">
+            {{-- <a href="index.html" class="logo text-center logo-light">
                 <span class="logo-lg">
                     <img src="{{ asset('design-sistem/assets/images/logo.png') }}" alt="" height="16">
                 </span>
                 <span class="logo-sm">
                     <img src="{{ asset('design-sistem/assets/images/logo_sm.png') }}" alt="" height="16">
                 </span>
-            </a>
-
+            </a> --}}
+            {{-- <h2>NEWSKAB</h2> --}}
             <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-dark">
+            {{-- <a href="index.html" class="logo text-center logo-dark">
                 <span class="logo-lg">
                     <img src="{{ asset('design-sistem/assets/images/logo-dark.png') }}" alt="" height="16">
                 </span>
@@ -55,7 +55,7 @@
                     <img src="{{ asset('design-sistem/assets/images/logo_sm_dark.png') }}" alt=""
                         height="16">
                 </span>
-            </a>
+            </a> --}}
 
             <div class="h-100" id="leftside-menu-container" data-simplebar="">
 

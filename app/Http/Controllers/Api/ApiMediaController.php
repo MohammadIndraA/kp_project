@@ -30,7 +30,7 @@ class ApiMediaController extends Controller
 
         return response()->json($formattedVideos);
     }
-
+//cek format input
     private function getMediaType($path)
     {
         $extension = pathinfo($path, PATHINFO_EXTENSION);

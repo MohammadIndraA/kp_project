@@ -172,6 +172,9 @@ class ManagemenVideoController extends Controller
             if ($request->has('deskripsi')) {  
                 $updateData['deskripsi'] = $request->input('deskripsi');  
             }  
+            if ($request->has('status')) {  
+                $updateData['status'] = $request->input('status');  
+            }  
     
             // Update data dasar jika ada perubahan  
             if (!empty($updateData)) {  
