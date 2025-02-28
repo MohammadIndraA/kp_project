@@ -9,9 +9,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controllers\Middleware;
 
 class ManagemenVideoController extends Controller
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('permission:view-video', ['only' => ['index','show']]),
+            new Middleware('permission:create-video', ['only' => ['create','store']]),
+            new Middleware('permission:edit-video', ['only' => ['edit','update']]),
+            new Middleware('permission:delete-video', ['only' => ['destroy']]),
+        ];
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -23,23 +34,30 @@ class ManagemenVideoController extends Controller
                     $deleteButton = '';
                 
                     // Tambahkan tombol edit jika memiliki izin
+                    if (auth()->user()->can('edit-video')) {
                         $editButton = '
-                            <button onclick="editFunc(`' . $row->id . '`)" class="btn btn-primary btn-flat btn-sm" title="Edit">
-                                <i class="dripicons-document-edit"></i>
-                            </button>
+                        <button onclick="editFunc(`' . $row->id . '`)" class="btn btn-primary btn-flat btn-sm" title="Edit">
+                        <i class="dripicons-document-edit"></i>
+                        </button>
                         ';
-
-                        $showButton = '
-                            <button onclick="showFunc(`' . $row->id . '`)" class="btn btn-secondary btn-flat btn-sm" title="Show">
-                                <i class="mdi mdi-eye"></i>
-                            </button>
-                        ';
+                    }
                 
-                        $deleteButton = '
-                            <button onclick="deleteFunc(`' . $row->id . '`)" class="btn btn-danger btn-flat btn-sm" title="Delete">
-                                <i class="dripicons-trash"></i>
+                        // Tambahkan tombol show jika memiliki izin
+                            $showButton = '
+                            <button onclick="showFunc(`' . $row->id . '`)" class="btn btn-secondary btn-flat btn-sm" title="Show">
+                            <i class="mdi mdi-eye"></i>
                             </button>
-                        ';
+                            ';
+                            
+                
+                        // Tambahkan tombol delete jika memiliki izin
+                        if (auth()->user()->can('delete-video')) {
+                            $deleteButton = '
+                            <button onclick="deleteFunc(`' . $row->id . '`)" class="btn btn-danger btn-flat btn-sm" title="Delete">
+                            <i class="dripicons-trash"></i>
+                            </button>
+                            ';
+                            }
                 
                     // Gabungkan semua tombol dalam satu grup
                     return '

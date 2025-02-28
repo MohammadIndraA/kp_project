@@ -20,7 +20,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        @can('view-permission')
+                        @can('create-permission')
                             <div class="col-sm-4">
                                 <a href="#" class="btn btn-primary mb-2"
                                     onClick="addUser('{{ route('permission.store') }}')"><i

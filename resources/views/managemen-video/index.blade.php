@@ -113,11 +113,13 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-sm-4 col-md-3 h-50 pt-2">
-                            <a href="#" class="btn btn-primary mb-2"
-                                onClick="addUser('{{ route('managemen-video.store') }}')"><i
-                                    class="mdi mdi-plus-circle me-2"></i>Tambah Manajemen Video</a>
-                        </div>
+                        @can('create-video')
+                            <div class="col-sm-4 col-md-3 h-50 pt-2">
+                                <a href="#" class="btn btn-primary mb-2"
+                                    onClick="addUser('{{ route('managemen-video.store') }}')"><i
+                                        class="mdi mdi-plus-circle me-2"></i>Tambah Manajemen Video</a>
+                            </div>
+                        @endcan
                     </div>
                     <div class="table-responsive">
                         <table class="table table-borderless" id="data-table">
