@@ -70,7 +70,7 @@ class ManagemenVideoController extends Controller
     {  
         $validator = Validator::make($request->all(), [  
             'judul' => 'required|string|max:255',  
-            'deskripsi' => 'required|string',  
+            'deskripsi' => 'required|string|max:140',  
             'status' => 'required|boolean',
             'path' => 'required|array', // Ubah menjadi array  
             'path.*' => 'file|mimetypes:video/mp4,image/jpeg,image/png|max:10240', // Validasi untuk setiap file  

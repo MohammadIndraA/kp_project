@@ -18,11 +18,12 @@ class ApiMediaController extends Controller
                 'id' => $video->id,
                 'judul' => $video->judul,
                 'deskripsi' => $video->deskripsi,
+                'status' => $video->status,
                 'multimedias' => $video->multimedias->map(function ($media) {
                     return [
                         'id' => $media->id,
                         'path' => $media->path,
-                        'type' => $this->getMediaType($media->path)
+                        'type' => $this->getMediaType($media->path),
                     ];
                 }),
             ];

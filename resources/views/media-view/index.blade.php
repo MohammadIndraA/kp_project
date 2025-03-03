@@ -18,7 +18,6 @@
                 <div class="carousel" id="carousel"></div>
             </div>
             <div class="description">
-                <h2>Deskripsi Informasi</h2>
                 <p id="description"></p>
             </div>
         </div>
@@ -128,7 +127,7 @@
             setInterval(() => {
                 currentIndex = (currentIndex + 1) % data.length;
                 loadMedia();
-            }, 60000); // 1 menit
+            }, 3000); // 1 menit
         });
     </script>
 </body>
