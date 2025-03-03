@@ -127,7 +127,7 @@
             setInterval(() => {
                 currentIndex = (currentIndex + 1) % data.length;
                 loadMedia();
-            }, 3000); // 1 menit
+            }, 60000); // 1 menit
         });
     </script>
 </body>
