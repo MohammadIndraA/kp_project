@@ -113,11 +113,13 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-sm-4 col-md-3 h-50 pt-2">
-                            <a href="#" class="btn btn-primary mb-2"
-                                onClick="addUser('{{ route('managemen-video.store') }}')"><i
-                                    class="mdi mdi-plus-circle me-2"></i>Tambah Manajemen Video</a>
-                        </div>
+                        @can('create-video')
+                            <div class="col-sm-4 col-md-3 h-50 pt-2">
+                                <a href="#" class="btn btn-primary mb-2"
+                                    onClick="addUser('{{ route('managemen-video.store') }}')"><i
+                                        class="mdi mdi-plus-circle me-2"></i>Tambah Manajemen Video</a>
+                            </div>
+                        @endcan
                     </div>
                     <div class="table-responsive">
                         <table class="table table-borderless" id="data-table">
@@ -164,10 +166,14 @@
                 <label for="status" class="col-3 col-form-label">Status <sop class="text-danger">*</sop>
                 </label>
                 <div class="col-9">
-                    <select class="form-control select2" data-toggle="select2" id="status" name="status">
-                        <option value="1">Aktif</option>
-                        <option value="0">Tidak Aktif</option>
-                    </select>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" id="aktif" name="status" value="1" class="form-check-input">
+                        <label class="form-check-label" for="aktif">Aktif</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" id="nonaktif" name="status" value="0" class="form-check-input">
+                        <label class="form-check-label" for="nonaktif">Nonaktif</label>
+                    </div>
                 </div>
             </div>
             <div class="row mb-1">
@@ -292,6 +298,11 @@
                     $('#id').val(res.data.id);
                     $('#judul').val(res.data.judul);
                     $('#deskripsi').val(res.data.deskripsi);
+                    if (res.data.status == 1) {
+                        $('#aktif').prop('checked', true);
+                    } else {
+                        $('#nonaktif').prop('checked', true);
+                    }
                 },
                 error: function(data) {
                     console.log(data.errors);
