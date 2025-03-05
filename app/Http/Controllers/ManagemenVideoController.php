@@ -11,12 +11,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+<<<<<<< HEAD
 use ProtoneMedia\LaravelFFMpeg\Filters\WatermarkFactory;
 
 use function Illuminate\Log\log;
+=======
+use Illuminate\Routing\Controllers\Middleware;
+>>>>>>> development1
 
 class ManagemenVideoController extends Controller
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('permission:view-video', ['only' => ['index','show']]),
+            new Middleware('permission:create-video', ['only' => ['create','store']]),
+            new Middleware('permission:edit-video', ['only' => ['edit','update']]),
+            new Middleware('permission:delete-video', ['only' => ['destroy']]),
+        ];
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -28,22 +42,36 @@ class ManagemenVideoController extends Controller
                     $deleteButton = '';
                 
                     // Tambahkan tombol edit jika memiliki izin
+                    if (auth()->user()->can('edit-video')) {
                         $editButton = '
-                            <button onclick="editFunc(`' . $row->id . '`)" class="btn btn-primary btn-flat btn-sm" title="Edit">
-                                <i class="dripicons-document-edit"></i>
-                            </button>
+                        <button onclick="editFunc(`' . $row->id . '`)" class="btn btn-primary btn-flat btn-sm" title="Edit">
+                        <i class="dripicons-document-edit"></i>
+                        </button>
                         ';
+                    }
                 
-                        $deleteButton = '
-                            <button onclick="deleteFunc(`' . $row->id . '`)" class="btn btn-danger btn-flat btn-sm" title="Delete">
-                                <i class="dripicons-trash"></i>
+                        // Tambahkan tombol show jika memiliki izin
+                            $showButton = '
+                            <button onclick="showFunc(`' . $row->id . '`)" class="btn btn-secondary btn-flat btn-sm" title="Show">
+                            <i class="mdi mdi-eye"></i>
                             </button>
-                        ';
+                            ';
+                            
+                
+                        // Tambahkan tombol delete jika memiliki izin
+                        if (auth()->user()->can('delete-video')) {
+                            $deleteButton = '
+                            <button onclick="deleteFunc(`' . $row->id . '`)" class="btn btn-danger btn-flat btn-sm" title="Delete">
+                            <i class="dripicons-trash"></i>
+                            </button>
+                            ';
+                            }
                 
                     // Gabungkan semua tombol dalam satu grup
                     return '
                         <div class="d-flex gap-1">
                             ' . $editButton . '
+                            ' . $showButton . '
                             ' . $deleteButton . '
                         </div>
                     ';
@@ -55,7 +83,10 @@ class ManagemenVideoController extends Controller
                     }
                     return $images;
                 })
-                ->rawColumns(['action', 'path'])                
+                ->editColumn('status', function ($row) {
+                    return $row->status ? '<span class="badge bg-success rounded-pill">Aktif</span>' :  '<span class="badge bg-danger rounded-pill">Tidak Aktif</span>';
+                })
+                ->rawColumns(['action', 'path','status'])                
                 ->make(true);
         }
         return view('managemen-video.index');
@@ -65,9 +96,16 @@ class ManagemenVideoController extends Controller
     {  
         $validator = Validator::make($request->all(), [  
             'judul' => 'required|string|max:255',  
+<<<<<<< HEAD
             'deskripsi' => 'required|string',  
             'path' => 'required|array', // Expecting an array of files  
             'path.*' => 'file|mimetypes:video/mp4,image/jpeg,image/png|max:10240', // Validate each file  
+=======
+            'deskripsi' => 'required|string|max:140',  
+            'status' => 'required|boolean',
+            'path' => 'required|array', // Ubah menjadi array  
+            'path.*' => 'file|mimetypes:video/mp4,image/jpeg,image/png|max:10240', // Validasi untuk setiap file  
+>>>>>>> development1
         ]);  
         
         // Check validation  
@@ -83,7 +121,8 @@ class ManagemenVideoController extends Controller
             // Save data to ManagemenVideo   
             $managemenVideo = ManagemenVideo::create([  
                 'judul' => $request->input('judul'),  
-                'deskripsi' => $request->input('deskripsi'),  
+                'deskripsi' => $request->input('deskripsi'), 
+                'status' => $request->input('status')
             ]);   
         
             // Process multiple file uploads  
@@ -143,6 +182,7 @@ class ManagemenVideoController extends Controller
         $validator = Validator::make($request->all(), [  
             'judul' => 'sometimes|required|string|max:255',  
             'deskripsi' => 'sometimes|required|string',  
+            'status' => 'required|boolean',
             'path.*' => 'file|mimetypes:video/mp4,image/jpeg,image/png|max:10240',   
         ]);  
     
@@ -166,6 +206,9 @@ class ManagemenVideoController extends Controller
             }  
             if ($request->has('deskripsi')) {  
                 $updateData['deskripsi'] = $request->input('deskripsi');  
+            }  
+            if ($request->has('status')) {  
+                $updateData['status'] = $request->input('status');  
             }  
     
             // Update data dasar jika ada perubahan  

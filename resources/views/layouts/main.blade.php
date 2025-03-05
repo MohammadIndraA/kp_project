@@ -3,14 +3,14 @@
 
 <head>
     <meta charset="utf-8">
-    <title>SIPMI | @yield('title' ?? '')</title>
+    <title>NEWSKAB | @yield('title' ?? '')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
     <meta content="Coderthemes" name="author">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('design-sistem/assets/images/favicon.ico') }}">
+    {{-- <link rel="shortcut icon" href="{{ asset('design-sistem/assets/images/favicon.ico') }}"> --}}
     <!-- App css -->
     <link href="{{ asset('design-sistem/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('design-sistem/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="light-style">
@@ -37,17 +37,17 @@
         <div class="leftside-menu">
 
             <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-light">
+            {{-- <a href="index.html" class="logo text-center logo-light">
                 <span class="logo-lg">
                     <img src="{{ asset('design-sistem/assets/images/logo.png') }}" alt="" height="16">
                 </span>
                 <span class="logo-sm">
                     <img src="{{ asset('design-sistem/assets/images/logo_sm.png') }}" alt="" height="16">
                 </span>
-            </a>
-
+            </a> --}}
+            {{-- <h2>NEWSKAB</h2> --}}
             <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-dark">
+            {{-- <a href="index.html" class="logo text-center logo-dark">
                 <span class="logo-lg">
                     <img src="{{ asset('design-sistem/assets/images/logo-dark.png') }}" alt="" height="16">
                 </span>
@@ -55,25 +55,13 @@
                     <img src="{{ asset('design-sistem/assets/images/logo_sm_dark.png') }}" alt=""
                         height="16">
                 </span>
-            </a>
+            </a> --}}
 
             <div class="h-100" id="leftside-menu-container" data-simplebar="">
 
                 <!--- Sidemenu -->
                 @include('layouts.sidebar')
 
-                <!-- Help Box -->
-                <div class="help-box text-white text-center">
-                    <a href="javascript: void(0);" class="float-end close-btn text-white">
-                        <i class="mdi mdi-close"></i>
-                    </a>
-                    <img src="{{ asset('design-sistem/assets/images/help-icon.svg') }}" height="90"
-                        alt="Helper Icon Image">
-                    <h5 class="mt-3">Unlimited Access</h5>
-                    <p class="mb-3">Upgrade to plan to get access to unlimited reports</p>
-                    <a href="javascript: void(0);" class="btn btn-outline-light btn-sm">Upgrade</a>
-                </div>
-                <!-- end Help Box -->
                 <!-- End Sidebar -->
 
                 <div class="clearfix"></div>

@@ -11,7 +11,7 @@ class AuthController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            return redirect('/dashboard');
+            return redirect('/managemen-video');
         }
         return view('auth.index');
     }
@@ -44,7 +44,7 @@ class AuthController extends Controller
     
                         "status" => true, 
     
-                        "redirect" => url("/dashboard")
+                        "redirect" => url("/managemen-video")
     
                     ]);
     

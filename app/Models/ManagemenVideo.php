@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ManagemenVideo extends Model
 {
+    use HasFactory; // Tambahkan ini
+
     protected $table = 'managemen_videos';
 
     protected $fillable = [
         'judul',
         'deskripsi',
+        'status',
     ];
 
     public function multimedias(){
