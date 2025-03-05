@@ -10,7 +10,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('design-sistem/assets/images/favicon.ico') }}">
+    {{-- <link rel="shortcut icon" href="{{ asset('design-sistem/assets/images/favicon.ico') }}"> --}}
 
     <!-- App css -->
     <link href="{{ asset('design-sistem/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -77,7 +77,7 @@
     <!-- end page -->
 
     <footer class="footer footer-alt">
-        2018 - 2021 © Hyper - Coderthemes.com
+        {{ date('Y') }} © NEWSKAB
     </footer>
 
     <!-- bundle -->
