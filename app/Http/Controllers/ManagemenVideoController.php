@@ -11,13 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-<<<<<<< HEAD
-use ProtoneMedia\LaravelFFMpeg\Filters\WatermarkFactory;
-
-use function Illuminate\Log\log;
-=======
 use Illuminate\Routing\Controllers\Middleware;
->>>>>>> development1
 
 class ManagemenVideoController extends Controller
 {
@@ -96,16 +90,10 @@ class ManagemenVideoController extends Controller
     {  
         $validator = Validator::make($request->all(), [  
             'judul' => 'required|string|max:255',  
-<<<<<<< HEAD
-            'deskripsi' => 'required|string',  
-            'path' => 'required|array', // Expecting an array of files  
-            'path.*' => 'file|mimetypes:video/mp4,image/jpeg,image/png|max:10240', // Validate each file  
-=======
             'deskripsi' => 'required|string|max:140',  
             'status' => 'required|boolean',
             'path' => 'required|array', // Ubah menjadi array  
             'path.*' => 'file|mimetypes:video/mp4,image/jpeg,image/png|max:10240', // Validasi untuk setiap file  
->>>>>>> development1
         ]);  
         
         // Check validation  
